@@ -2,8 +2,7 @@ README.md Atualizado – Destaque Visual
 # 🌟 Projeto Mapas Mentais Avançados – Novo Cangaço Paraná
 
 ## 📌 Descrição
-Este projeto gera **mapas mentais grandes, detalhados e coloridos em SVG**, sobre o fenômeno do Novo Cangaço no Paraná.  
-Permite criar **mapas complexos** de múltiplos níveis de ramificação, mantendo **hierarquia, cores e legibilidade**.
+Este projeto gera **mapas mentais grandes, detalhados e coloridos em SVG**, permite criar **mapas complexos** de múltiplos níveis de ramificação, mantendo **hierarquia, cores e legibilidade**.
 
 ---
 
@@ -21,7 +20,7 @@ Permite criar **mapas complexos** de múltiplos níveis de ramificação, manten
    pip install graphviz
 
 
-Abra o arquivo Python (mapas_mentais_avancados.py)
+Abra o arquivo Python (mapa_mental.py)
 
 Altere:
 
@@ -36,7 +35,7 @@ python mapas_mentais_avancados.py
 
 O SVG será gerado e aberto automaticamente.
 
-🎨 Personalização
+## 🎨 Personalização
 
 Cores: altere a lista cores_ramos
 
@@ -46,7 +45,7 @@ Espaçamento entre nós: nodesep e ranksep
 
 Formato: SVG recomendado; PNG apenas se necessário
 
-💡 Vantagens
+## 💡 Vantagens
 
 Mapas sempre nítidos, ampliáveis sem perder qualidade
 
