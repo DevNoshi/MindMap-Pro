@@ -1,0 +1,78 @@
+// Novo Cangaço Paraná - Mapa Avançado
+digraph {
+	nodesep=1.5 rankdir=TB ranksep=2.5 size=40
+	node [fontname=Helvetica fontsize=16 shape=box style="filled,rounded"]
+	root [label="Novo Cangaço Paraná - Mapa Avançado" color="#FFD700" fontsize=22 style="filled,bold"]
+	root_0_0 [label="Fatores de atuação" color="#87CEFA" fontsize=18 style="filled,rounded"]
+	root -> root_0_0
+	root_0_0_1_0 [label="Geográficos" color="#FFB6C1" fontsize=18 style="filled,rounded"]
+	root_0_0 -> root_0_0_1_0
+	root_0_0_1_0_0 [label="Fronteira Oeste" color="#F0F8FF" fontsize=16 style="filled,rounded"]
+	root_0_0_1_0 -> root_0_0_1_0_0
+	root_0_0_1_0_1 [label="Cidades médias" color="#F0F8FF" fontsize=16 style="filled,rounded"]
+	root_0_0_1_0 -> root_0_0_1_0_1
+	root_0_0_1_0_2 [label="Rodovias estratégicas" color="#F0F8FF" fontsize=16 style="filled,rounded"]
+	root_0_0_1_0 -> root_0_0_1_0_2
+	root_0_0_1_1 [label=Sociais color="#FFB6C1" fontsize=18 style="filled,rounded"]
+	root_0_0 -> root_0_0_1_1
+	root_0_0_1_1_0 [label="Violência local" color="#F0F8FF" fontsize=16 style="filled,rounded"]
+	root_0_0_1_1 -> root_0_0_1_1_0
+	root_0_0_1_1_1 [label="Alvos financeiros" color="#F0F8FF" fontsize=16 style="filled,rounded"]
+	root_0_0_1_1 -> root_0_0_1_1_1
+	root_0_0_1_1_2 [label="Comunidade colaborativa" color="#F0F8FF" fontsize=16 style="filled,rounded"]
+	root_0_0_1_1 -> root_0_0_1_1_2
+	root_0_0_1_2 [label=Policiais color="#FFB6C1" fontsize=18 style="filled,rounded"]
+	root_0_0 -> root_0_0_1_2
+	root_0_0_1_2_0 [label="Reação PMPR" color="#F0F8FF" fontsize=16 style="filled,rounded"]
+	root_0_0_1_2 -> root_0_0_1_2_0
+	root_0_0_1_2_1 [label="Interceptações PF" color="#F0F8FF" fontsize=16 style="filled,rounded"]
+	root_0_0_1_2 -> root_0_0_1_2_1
+	root_0_0_1_2_2 [label="Operações Gaeco" color="#F0F8FF" fontsize=16 style="filled,rounded"]
+	root_0_0_1_2 -> root_0_0_1_2_2
+	root_0_1 [label="Facções e Grupos" color="#87CEFA" fontsize=18 style="filled,rounded"]
+	root -> root_0_1
+	root_0_1_1_0 [label=PCC color="#FFB6C1" fontsize=18 style="filled,rounded"]
+	root_0_1 -> root_0_1_1_0
+	root_0_1_1_0_0 [label="Articulação nacional" color="#F0F8FF" fontsize=16 style="filled,rounded"]
+	root_0_1_1_0 -> root_0_1_1_0_0
+	root_0_1_1_0_1 [label="Logística armada" color="#F0F8FF" fontsize=16 style="filled,rounded"]
+	root_0_1_1_0 -> root_0_1_1_0_1
+	root_0_1_1_1 [label=CV color="#FFB6C1" fontsize=18 style="filled,rounded"]
+	root_0_1 -> root_0_1_1_1
+	root_0_1_1_1_0 [label="Apoio regional" color="#F0F8FF" fontsize=16 style="filled,rounded"]
+	root_0_1_1_1 -> root_0_1_1_1_0
+	root_0_1_1_1_1 [label="Roubo de cargas" color="#F0F8FF" fontsize=16 style="filled,rounded"]
+	root_0_1_1_1 -> root_0_1_1_1_1
+	root_0_1_1_2 [label="Quadrilhas móveis" color="#FFB6C1" fontsize=18 style="filled,rounded"]
+	root_0_1 -> root_0_1_1_2
+	root_0_1_1_2_0 [label="Ataques simultâneos" color="#F0F8FF" fontsize=16 style="filled,rounded"]
+	root_0_1_1_2 -> root_0_1_1_2_0
+	root_0_1_1_2_1 [label="Roubos coordenados" color="#F0F8FF" fontsize=16 style="filled,rounded"]
+	root_0_1_1_2 -> root_0_1_1_2_1
+	root_0_1_1_3 [label="Grupos de apoio" color="#FFB6C1" fontsize=18 style="filled,rounded"]
+	root_0_1 -> root_0_1_1_3
+	root_0_1_1_3_0 [label="Alimentação" color="#F0F8FF" fontsize=16 style="filled,rounded"]
+	root_0_1_1_3 -> root_0_1_1_3_0
+	root_0_1_1_3_1 [label=Transporte color="#F0F8FF" fontsize=16 style="filled,rounded"]
+	root_0_1_1_3 -> root_0_1_1_3_1
+	root_0_1_1_3_2 [label="Inteligência local" color="#F0F8FF" fontsize=16 style="filled,rounded"]
+	root_0_1_1_3 -> root_0_1_1_3_2
+	root_0_2 [label="Linha do Tempo" color="#87CEFA" fontsize=18 style="filled,rounded"]
+	root -> root_0_2
+	root_0_2_0 [label="2012 – 52 ataques" color="#FFFFFF" fontsize=16 style="filled,rounded"]
+	root_0_2 -> root_0_2_0
+	root_0_2_1 [label="2021 – Interceptações" color="#FFFFFF" fontsize=16 style="filled,rounded"]
+	root_0_2 -> root_0_2_1
+	root_0_2_2 [label="2022 – Ataque Guarapuava" color="#FFFFFF" fontsize=16 style="filled,rounded"]
+	root_0_2 -> root_0_2_2
+	root_0_2_3 [label="2025 – Operação policial" color="#FFFFFF" fontsize=16 style="filled,rounded"]
+	root_0_2 -> root_0_2_3
+	root_0_3 [label="Conclusões" color="#87CEFA" fontsize=18 style="filled,rounded"]
+	root -> root_0_3
+	root_0_3_0 [label="Paraná = alvo estratégico" color="#FFFFFF" fontsize=16 style="filled,rounded"]
+	root_0_3 -> root_0_3_0
+	root_0_3_1 [label="Corredor logístico" color="#FFFFFF" fontsize=16 style="filled,rounded"]
+	root_0_3 -> root_0_3_1
+	root_0_3_2 [label="Centro de reação" color="#FFFFFF" fontsize=16 style="filled,rounded"]
+	root_0_3 -> root_0_3_2
+}
