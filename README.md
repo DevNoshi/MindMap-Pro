@@ -1,43 +1,57 @@
-# Projeto de Mapas Mentais - Novo Cangaço Paraná
+README.md Atualizado – Destaque Visual
+# 🌟 Projeto Mapas Mentais Avançados – Novo Cangaço Paraná
 
-## Descrição
-Este projeto gera **mapas mentais em PNG** sobre o fenômeno do Novo Cangaço no Paraná.  
-O projeto é modular e reutilizável: você pode criar novos mapas mentais apenas alterando os tópicos nos dicionários.
+## 📌 Descrição
+Este projeto gera **mapas mentais grandes, detalhados e coloridos em SVG**, sobre o fenômeno do Novo Cangaço no Paraná.  
+Permite criar **mapas complexos** de múltiplos níveis de ramificação, mantendo **hierarquia, cores e legibilidade**.
 
-## Estrutura do Projeto
-- `mapas_mentais.py` → código principal para gerar os mapas mentais
-- `Mapa_Mental1_Fatores_Faccoes.png` → mapa mental 1: fatores e facções
-- `Mapa_Mental2_LinhaTempo_Conclusao.png` → mapa mental 2: linha do tempo e conclusão
+---
 
-## Como usar
-1. Instale Python 3.x
-2. Instale o Graphviz e a biblioteca Python:
+## 📂 Estrutura do Projeto
+- `mapa_mental.py` → Código avançado para mapas grandes  
+- `README.md` → Detalhes da estrutura e funcionalidades
+
+---
+
+## ⚡ Como usar
+
+1. Instale Python 3.x  
+2. Instale Graphviz e a biblioteca Python:
    ```bash
    pip install graphviz
 
-Abra o arquivo mapa_mental.py
 
-Altere os dicionários estrutura1 e estrutura2 para criar seus próprios mapas mentais
+Abra o arquivo Python (mapas_mentais_avancados.py)
 
-Execute o código:
+Altere:
 
-python mapas_mentais.py
+estrutura_grande → ramos e sub-ramos
+
+titulo_grande → título central do mapa
+
+Execute:
+
+python mapas_mentais_avancados.py
 
 
-Os mapas mentais serão gerados em PNG na mesma pasta.
+O SVG será gerado e aberto automaticamente.
 
-## Personalização
+🎨 Personalização
 
-## Alterar o título central: variável titulo1 ou titulo2
+Cores: altere a lista cores_ramos
 
-## Alterar tópicos principais e sub-tópicos: dicionários estrutura1 e estrutura2
+Fontes e tamanhos: ajuste fontsize para títulos, ramos e folhas
 
-## Alterar nome do arquivo gerado: variável arquivo1 ou arquivo2
+Espaçamento entre nós: nodesep e ranksep
 
-## Vantagens desta abordagem
+Formato: SVG recomendado; PNG apenas se necessário
 
-## Reutilizável para qualquer projeto futuro
+💡 Vantagens
 
-## Fácil atualização de tópicos
+Mapas sempre nítidos, ampliáveis sem perder qualidade
 
-## Geração automática de imagens em PNG com hierarquia clara
+Ideal para apresentações, slides, impressões e estudo
+
+Estrutura modular e fácil de reutilizar para qualquer tema
+
+Suporta mapas grandes e complexos com dezenas de ramos e sub-ramos
