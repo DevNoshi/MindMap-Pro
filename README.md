@@ -1,4 +1,3 @@
-README.md Atualizado – Destaque Visual
 # 🌟 Projeto Mapas Mentais Avançados – Novo Cangaço Paraná
 
 ## 📌 Descrição
@@ -7,6 +6,7 @@ Este projeto gera **mapas mentais grandes, detalhados e coloridos em SVG**, perm
 ---
 
 ## 📂 Estrutura do Projeto
+
 - `mapa_mental.py` → Código avançado para mapas grandes  
 - `README.md` → Detalhes da estrutura e funcionalidades
 
