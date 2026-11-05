@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MindMap Studio Pro - Drag, Resize & Custom Export</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            500: '#00f0ff',
+                            accent: '#00f0ff',
+                            electric: '#3b82f6',
+                        },
+                        darkbg: {
+                            deep: '#090d12',
+                            base: '#0d1117',
+                            card: '#161b22',
+                            surface: '#21262d',
+                            border: '#30363d',
+                            hover: '#2a313c'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                        mono: ['Fira Code', 'monospace']
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- D3.js v7 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #090d12;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #30363d;
+            border-radius: 9999px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #484f58;
+        }
+
+        .bg-grid-minimal {
+            background-image: radial-gradient(rgba(255, 255, 255, 0.07) 1px, transparent 1px);
+            background-size: 24px 24px;
+        }
+
+        .node-group {
+            cursor: move;
+            user-select: none;
+        }
+
+        .node-rect {
+            transition: stroke 0.2s ease, filter 0.2s ease;
+        }
+
+        .node-group:hover .node-rect {
+            stroke: #00f0ff !important;
+            filter: drop-shadow(0 0 8px rgba(0, 240, 255, 0.3));
+        }
+
+        .node-link {
+            fill: none;
+            stroke-linecap: round;
+            transition: stroke-width 0.2s ease;
+        }
+    </style>
+</head>
+<body class="bg-darkbg-deep text-gray-200 font-sans h-full overflow-hidden flex flex-col antialiased">
+
+    <!-- Top Bar -->
+    <header class="h-14 border-b border-darkbg-border bg-darkbg-card px-5 flex items-center justify-between z-20 shrink-0">
+        <div class="flex items-center space-x-3">
+            <div class="w-8 h-8 rounded-lg bg-darkbg-surface border border-brand-accent/40 flex items-center justify-center">
+                <i data-lucide="move" class="w-4 h-4 text-brand-accent"></i>
+            </div>
+            <div>
+                <h1 class="font-semibold text-sm tracking-tight flex items-center gap-2 text-white">
+                    MindMap Studio
+                    <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-brand-accent/10 text-brand-accent border border-brand-accent/30">DRAGGABLE & RESIZABLE</span>
+                </h1>
+            </div>
+        </div>
+
+        <div class="flex items-center space-x-3">
+            <!-- Preset Selector -->
+            <div class="flex items-center bg-darkbg-surface px-3 py-1.5 rounded-lg border border-darkbg-border space-x-2 text-xs">
+                <span class="text-gray-400 font-medium">Preset:</span>
+                <select id="presetSelector" class="bg-transparent text-xs text-gray-200 font-medium focus:outline-none cursor-pointer">
+                    <option value="english" class="bg-darkbg-card">Dicas de Inglês (Compacto)</option>
+                    <option value="nmap" class="bg-darkbg-card">Nmap & Comandos (Completo)</option>
+                    <option value="novoCangaco" class="bg-darkbg-card">Novo Cangaço Paraná</option>
+                </select>
+            </div>
+
+            <!-- Export SVG Button -->
+            <button id="btnExportSVG" class="flex items-center space-x-1.5 bg-brand-accent/10 hover:bg-brand-accent/20 border border-brand-accent/40 text-brand-accent text-xs font-medium py-1.5 px-3 rounded-lg transition shadow-sm">
+                <i data-lucide="download" class="w-3.5 h-3.5"></i>
+                <span>Exportar SVG Arrumado</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Workspace -->
+    <div class="flex-1 flex overflow-hidden relative">
+
+        <!-- Left Sidebar / Controls -->
+        <aside class="w-80 md:w-96 border-r border-darkbg-border bg-darkbg-card flex flex-col shrink-0 z-10">
+            
+            <div class="p-4 border-b border-darkbg-border flex items-center justify-between bg-darkbg-deep/50">
+                <span class="text-xs font-semibold tracking-wider uppercase text-gray-300 flex items-center gap-2">
+                    <i data-lucide="edit-3" class="w-4 h-4 text-brand-accent"></i> Editor de Estrutura
+                </span>
+                <span class="text-[10px] font-mono text-gray-500">Use Espaços / Tab</span>
+            </div>
+
+            <div class="p-4 space-y-4 flex-1 flex flex-col overflow-y-auto">
+                <!-- Title Input -->
+                <div>
+                    <label class="text-[11px] font-medium text-gray-400 block mb-1">Título do Nó Central</label>
+                    <input id="titleInput" type="text" value="Praticar Inglês" class="w-full bg-darkbg-deep border border-darkbg-border rounded-lg p-2 text-xs text-gray-200 focus:outline-none focus:border-brand-accent/50">
+                </div>
+
+                <!-- Text Area Input -->
+                <div class="flex-1 flex flex-col">
+                    <label class="text-[11px] font-medium text-gray-400 block mb-1">Conteúdo Indentado</label>
+                    <textarea id="textInput" spellcheck="false" class="w-full flex-1 bg-darkbg-deep border border-darkbg-border rounded-xl p-3 font-mono text-xs text-gray-200 focus:outline-none focus:border-brand-accent/50 transition resize-none leading-relaxed" placeholder="Digite seu texto indentado..."></textarea>
+                </div>
+
+                <!-- Resize & Spacing Sliders -->
+                <div class="space-y-3 pt-2 border-t border-darkbg-border">
+                    <div class="text-xs font-medium text-gray-300 flex items-center justify-between">
+                        <span>Dimensões das Caixas</span>
+                    </div>
+
+                    <div>
+                        <div class="flex justify-between text-[11px] text-gray-400 mb-1">
+                            <span>Aparelhamento / Tamanho do Nó:</span>
+                            <span id="valPadding" class="font-mono text-brand-accent">14px</span>
+                        </div>
+                        <input id="sliderPadding" type="range" min="6" max="28" value="14" class="w-full accent-brand-accent bg-darkbg-deep h-1 rounded-lg appearance-none cursor-pointer">
+                    </div>
+
+                    <div>
+                        <div class="flex justify-between text-[11px] text-gray-400 mb-1">
+                            <span>Tamanho da Fonte:</span>
+                            <span id="valFontSize" class="font-mono text-brand-accent">12px</span>
+                        </div>
+                        <input id="sliderFontSize" type="range" min="10" max="18" value="12" class="w-full accent-brand-accent bg-darkbg-deep h-1 rounded-lg appearance-none cursor-pointer">
+                    </div>
+
+                    <div>
+                        <div class="flex justify-between text-[11px] text-gray-400 mb-1">
+                            <span>Largura Máxima do Nó:</span>
+                            <span id="valMaxWidth" class="font-mono text-brand-accent">220px</span>
+                        </div>
+                        <input id="sliderMaxWidth" type="range" min="120" max="380" value="220" class="w-full accent-brand-accent bg-darkbg-deep h-1 rounded-lg appearance-none cursor-pointer">
+                    </div>
+                </div>
+
+                <!-- Re-layout Button -->
+                <div class="flex gap-2">
+                    <button id="btnAutoLayout" class="flex-1 py-2.5 bg-darkbg-surface hover:bg-darkbg-hover border border-darkbg-border text-xs font-medium rounded-xl flex items-center justify-center space-x-1.5 transition text-gray-300">
+                        <i data-lucide="layout-grid" class="w-3.5 h-3.5 text-brand-accent"></i>
+                        <span>Reorganizar Tudo</span>
+                    </button>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Canvas Area -->
+        <main class="flex-1 flex flex-col bg-darkbg-base bg-grid-minimal relative overflow-hidden">
+
+            <!-- Instruction Overlay -->
+            <div class="absolute top-4 left-4 z-10 bg-darkbg-card/90 border border-darkbg-border px-3 py-2 rounded-xl text-xs text-gray-400 flex items-center gap-2 backdrop-blur-md">
+                <i data-lucide="info" class="w-4 h-4 text-brand-accent shrink-0"></i>
+                <span><strong>Arraste qualquer balão</strong> para reorganizar. Role para Zoom.</span>
+            </div>
+
+            <!-- Canvas Controls -->
+            <div class="absolute top-4 right-4 z-10 flex items-center space-x-1 bg-darkbg-card/90 border border-darkbg-border p-1 rounded-xl shadow-xl backdrop-blur-md">
+                <button id="btnZoomIn" title="Aumentar Zoom" class="p-2 hover:bg-darkbg-hover rounded-lg text-gray-400 hover:text-white transition">
+                    <i data-lucide="zoom-in" class="w-4 h-4"></i>
+                </button>
+                <button id="btnZoomOut" title="Diminuir Zoom" class="p-2 hover:bg-darkbg-hover rounded-lg text-gray-400 hover:text-white transition">
+                    <i data-lucide="zoom-out" class="w-4 h-4"></i>
+                </button>
+                <button id="btnResetZoom" title="Centralizar" class="p-2 hover:bg-darkbg-hover rounded-lg text-gray-400 hover:text-white transition">
+                    <i data-lucide="maximize-2" class="w-4 h-4"></i>
+                </button>
+            </div>
+
+            <!-- SVG Container -->
+            <div id="canvasContainer" class="w-full h-full cursor-grab active:cursor-grabbing">
+                <svg id="mindmapSvg" class="w-full h-full">
+                    <g id="viewportG">
+                        <g id="linksG"></g>
+                        <g id="nodesG"></g>
+                    </g>
+                </svg>
+            </div>
+        </main>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed bottom-6 right-6 transform translate-y-20 opacity-0 transition-all duration-300 bg-darkbg-surface border border-brand-accent/40 text-white px-4 py-2.5 rounded-xl shadow-2xl flex items-center space-x-2 text-xs font-medium z-50 pointer-events-none">
+        <i data-lucide="check-circle" class="w-4 h-4 text-brand-accent"></i>
+        <span id="toastMsg">Salvo com sucesso!</span>
+    </div>
+
+    <script>
+        // ==========================================
+        // PRESETS DATASET
+        // ==========================================
+        const PRESETS = {
+            english: {
+                title: "Praticar Inglês",
+                text: `Áudio e Escuta
+    Ouvir podcasts diários
+    Assistir séries (legenda em inglês)
+Fala e Conversação
+    Falar sozinho (Shadowing)
+    Praticar com apps de voz
+Leitura e Escrita
+    Ler notícias curtas
+    Escrever um breve diário
+Imersão no Celular
+    Mudar idioma do sistema
+    Consumir conteúdo nativo`
+            },
+            nmap: {
+                title: "Nmap (Network Mapper)",
+                text: `Conceito e Finalidade
+    Varredura de rede
+    Auditoria de segurança
+    Descoberta de hosts e portas
+Principais Comandos
+    Varredura de Portas
+        nmap <IP_ou_Dominio>
+        nmap -p 80,443 <IP>
+        nmap -p- <IP>
+    Detecção de Versão e SO
+        nmap -sV <IP>
+        nmap -O <IP>
+        nmap -A <IP>
+    Técnicas de Scan
+        nmap -sS <IP>
+        nmap -sT <IP>
+        nmap -sU <IP>
+        nmap -sn <IP>
+Cuidados e Boas Práticas
+    Autorização Prévia
+        Permissão formal obrigatória
+        Evitar redes públicas
+    Impacto na Rede
+        Riscos de DoS acidental
+        Uso prudente de opções agressivas`
+            },
+            novoCangaco: {
+                title: "Novo Cangaço Paraná",
+                text: `Fatores de Atuação
+    Geográficos
+        Fronteira Oeste
+        Cidades Médias
+    Sociais
+        Violência Local
+        Alvos Financeiros
+Facções e Grupos
+    PCC
+        Articulação Nacional
+    CV
+        Apoio Regional
+Linha do Tempo
+    2012 - 52 Ataques
+    2022 - Ataque Guarapuava`
+            }
+        };
+
+        // Palettes for depth levels
+        const LEVEL_COLORS = [
+            { bg: '#00f0ff', text: '#090d12', border: '#00f0ff' }, // Root
+            { bg: '#161b22', text: '#38bdf8', border: '#00f0ff' }, // L1
+            { bg: '#161b22', text: '#818cf8', border: '#6366f1' }, // L2
+            { bg: '#161b22', text: '#f472b6', border: '#ec4899' }, // L3
+            { bg: '#161b22', text: '#34d399', border: '#10b981' }  // L4
+        ];
+
+        // ==========================================
+        // STATE MANAGEMENT
+        // ==========================================
+        let rootData = null;
+        let nodeMap = new Map();
+        let currentZoom = d3.zoomIdentity;
+        let paddingValue = 14;
+        let fontSizeValue = 12;
+        let maxWidthValue = 220;
+
+        // D3 Zoom Setup
+        const svg = d3.select("#mindmapSvg");
+        const viewportG = d3.select("#viewportG");
+        const linksG = d3.select("#linksG");
+        const nodesG = d3.select("#nodesG");
+
+        const zoomBehavior = d3.zoom()
+            .scaleExtent([0.15, 3])
+            .on("zoom", (event) => {
+                currentZoom = event.transform;
+                viewportG.attr("transform", currentZoom);
+            });
+
+        svg.call(zoomBehavior);
+
+        // ==========================================
+        // PARSER FOR INDENTED TEXT
+        // ==========================================
+        function parseIndentedText(title, text) {
+            const lines = text.split('\n').filter(l => l.trim().length > 0);
+            const root = { id: 'root', name: title, children: [], depth: 0 };
+            const stack = [{ indent: -1, node: root }];
+
+            lines.forEach((line, idx) => {
+                const indent = line.search(/\S/);
+                const content = line.trim().replace(/^[-*]\s*/, '');
+                
+                while (stack.length > 1 && stack[stack.length - 1].indent >= indent) {
+                    stack.pop();
+                }
+
+                const parent = stack[stack.length - 1].node;
+                const newNode = {
+                    id: `node_${idx}_${Math.random().toString(36).substr(2, 4)}`,
+                    name: content,
+                    children: [],
+                    depth: parent.depth + 1
+                };
+
+                if (!parent.children) parent.children = [];
+                parent.children.push(newNode);
+                stack.push({ indent: indent, node: newNode });
+            });
+
+            return root;
+        }
+
+        // ==========================================
+        // LAYOUT CALCULATOR & RENDERER
+        // ==========================================
+        function calculateAndRender(preserveCustomPositions = false) {
+            const title = document.getElementById("titleInput").value.trim() || "Mapa Mental";
+            const text = document.getElementById("textInput").value;
+
+            const oldPositions = new Map();
+            if (preserveCustomPositions && nodeMap.size > 0) {
+                nodeMap.forEach((v, k) => {
+                    oldPositions.set(k, { x: v.x, y: v.y });
+                });
+            }
+
+            rootData = parseIndentedText(title, text);
+            
+            // Build D3 Hierarchy
+            const hierarchyRoot = d3.hierarchy(rootData);
+            
+            // Tree layout
+            const treeLayout = d3.tree()
+                .nodeSize([60, 260]); // Spacing [height, width]
+
+            treeLayout(hierarchyRoot);
+
+            nodeMap.clear();
+
+            hierarchyRoot.descendants().forEach(d => {
+                const id = d.data.id;
+                let x = d.y; // Horizontal layout
+                let y = d.x;
+
+                // Restore custom drag position if applicable
+                if (preserveCustomPositions && oldPositions.has(id)) {
+                    x = oldPositions.get(id).x;
+                    y = oldPositions.get(id).y;
+                }
+
+                nodeMap.set(id, {
+                    id: id,
+                    data: d.data,
+                    parent: d.parent ? d.parent.data.id : null,
+                    x: x,
+                    y: y,
+                    depth: d.depth
+                });
+            });
+
+            renderGraph();
+        }
+
+        function renderGraph() {
+            const nodes = Array.from(nodeMap.values());
+            const links = [];
+
+            nodes.forEach(n => {
+                if (n.parent && nodeMap.has(n.parent)) {
+                    links.push({
+                        source: nodeMap.get(n.parent),
+                        target: n
+                    });
+                }
+            });
+
+            // Draw Links
+            const linkSelection = linksG.selectAll(".node-link")
+                .data(links, d => `${d.source.id}->${d.target.id}`);
+
+            linkSelection.exit().remove();
+
+            const linkEnter = linkSelection.enter()
+                .append("path")
+                .attr("class", "node-link");
+
+            const allLinks = linkEnter.merge(linkSelection);
+
+            allLinks
+                .attr("d", d => {
+                    // Smooth diagonal cubic bezier
+                    const srcX = d.source.x + (d.source.width || 120);
+                    const srcY = d.source.y + (d.source.height || 40) / 2;
+                    const tgtX = d.target.x;
+                    const tgtY = d.target.y + (d.target.height || 40) / 2;
+
+                    return `M ${srcX} ${srcY} C ${(srcX + tgtX) / 2} ${srcY}, ${(srcX + tgtX) / 2} ${tgtY}, ${tgtX} ${tgtY}`;
+                })
+                .attr("stroke", d => {
+                    const level = Math.min(d.target.depth, LEVEL_COLORS.length - 1);
+                    return LEVEL_COLORS[level].border;
+                })
+                .attr("stroke-opacity", 0.45)
+                .attr("stroke-width", d => Math.max(1.2, 2.5 - d.target.depth * 0.4));
+
+            // Draw Nodes
+            const nodeSelection = nodesG.selectAll(".node-group")
+                .data(nodes, d => d.id);
+
+            nodeSelection.exit().remove();
+
+            const nodeEnter = nodeSelection.enter()
+                .append("g")
+                .attr("class", "node-group");
+
+            nodeEnter.append("rect")
+                .attr("class", "node-rect")
+                .attr("rx", 8)
+                .attr("ry", 8);
+
+            nodeEnter.append("text")
+                .attr("class", "node-text")
+                .attr("font-family", "Inter, sans-serif");
+
+            const allNodes = nodeEnter.merge(nodeSelection);
+
+            allNodes
+                .attr("transform", d => `translate(${d.x}, ${d.y})`)
+                .call(d3.drag()
+                    .on("start", dragStarted)
+                    .on("drag", dragged)
+                    .on("end", dragEnded)
+                );
+
+            // Style and measure text
+            allNodes.each(function(d) {
+                const group = d3.select(this);
+                const textEl = group.select(".node-text");
+                const rectEl = group.select(".node-rect");
+
+                const level = Math.min(d.depth, LEVEL_COLORS.length - 1);
+                const colorScheme = LEVEL_COLORS[level];
+
+                textEl
+                    .text(d.data.name)
+                    .attr("font-size", `${d.depth === 0 ? fontSizeValue + 3 : fontSizeValue}px`)
+                    .attr("font-weight", d.depth <= 1 ? "600" : "400")
+                    .attr("fill", colorScheme.text)
+                    .attr("x", paddingValue)
+                    .attr("y", paddingValue + fontSizeValue * 0.8);
+
+                // Auto bounding box
+                const bbox = textEl.node().getBBox();
+                const width = Math.min(Math.max(bbox.width + paddingValue * 2, 80), maxWidthValue);
+                const height = bbox.height + paddingValue * 2;
+
+                d.width = width;
+                d.height = height;
+
+                rectEl
+                    .attr("width", width)
+                    .attr("height", height)
+                    .attr("fill", colorScheme.bg)
+                    .attr("stroke", colorScheme.border)
+                    .attr("stroke-width", d.depth === 0 ? 2 : 1.2);
+            });
+
+            // Update links again after dimensions calculation
+            allLinks.attr("d", d => {
+                const srcX = d.source.x + d.source.width;
+                const srcY = d.source.y + d.source.height / 2;
+                const tgtX = d.target.x;
+                const tgtY = d.target.y + d.target.height / 2;
+
+                return `M ${srcX} ${srcY} C ${(srcX + tgtX) / 2} ${srcY}, ${(srcX + tgtX) / 2} ${tgtY}, ${tgtX} ${tgtY}`;
+            });
+        }
+
+        // ==========================================
+        // DRAGGING BEHAVIOR
+        // ==========================================
+        function dragStarted(event, d) {
+            d3.select(this).raise();
+        }
+
+        function dragged(event, d) {
+            d.x += event.dx;
+            d.y += event.dy;
+
+            d3.select(this).attr("transform", `translate(${d.x}, ${d.y})`);
+
+            // Re-render connected links in real-time
+            linksG.selectAll(".node-link")
+                .attr("d", l => {
+                    const srcX = l.source.x + l.source.width;
+                    const srcY = l.source.y + l.source.height / 2;
+                    const tgtX = l.target.x;
+                    const tgtY = l.target.y + l.target.height / 2;
+
+                    return `M ${srcX} ${srcY} C ${(srcX + tgtX) / 2} ${srcY}, ${(srcX + tgtX) / 2} ${tgtY}, ${tgtX} ${tgtY}`;
+                });
+        }
+
+        function dragEnded(event, d) {
+            // Drag complete
+        }
+
+        // ==========================================
+        // SVG EXPORT WITH EXACT BOUNDS
+        // ==========================================
+        function exportCleanSVG() {
+            const svgNode = document.getElementById("mindmapSvg");
+            const cloneSvg = svgNode.cloneNode(true);
+            
+            // Remove transform from clone viewport
+            const viewport = cloneSvg.querySelector("#viewportG");
+            viewport.removeAttribute("transform");
+
+            // Calculate bounding box of content
+            const nodes = Array.from(nodeMap.values());
+            if (nodes.length === 0) return;
+
+            let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+
+            nodes.forEach(n => {
+                minX = Math.min(minX, n.x);
+                minY = Math.min(minY, n.y);
+                maxX = Math.max(maxX, n.x + (n.width || 100));
+                maxY = Math.max(maxY, n.y + (n.height || 40));
+            });
+
+            const margin = 40;
+            minX -= margin;
+            minY -= margin;
+            const width = (maxX - minX) + margin * 2;
+            const height = (maxY - minY) + margin * 2;
+
+            // Shift viewport to origin
+            viewport.setAttribute("transform", `translate(${-minX}, ${-minY})`);
+
+            cloneSvg.setAttribute("width", width);
+            cloneSvg.setAttribute("height", height);
+            cloneSvg.setAttribute("viewBox", `0 0 ${width} ${height}`);
+            cloneSvg.style.backgroundColor = "#090d12";
+
+            const serializer = new XMLSerializer();
+            let svgString = serializer.serializeToString(cloneSvg);
+
+            // Add namespaces if missing
+            if (!svgString.match(/^<svg[^>]+xmlns="http\:\/\/www\.w3\.org\/2000\/svg"/)) {
+                svgString = svgString.replace(/^<svg/, '<svg xmlns="http://www.w3.org/2000/svg"');
+            }
+
+            const blob = new Blob([svgString], { type: "image/svg+xml;charset=utf-8" });
+            const url = URL.createObjectURL(blob);
+            
+            const link = document.createElement("a");
+            link.href = url;
+            link.download = "mapa_mental_customizado.svg";
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+
+            showToast("SVG exportado com suas posições arrumadas!");
+        }
+
+        // ==========================================
+        // UI HELPERS & EVENT LISTENERS
+        // ==========================================
+        function showToast(msg) {
+            const toast = document.getElementById("toast");
+            document.getElementById("toastMsg").innerText = msg;
+            toast.classList.remove("opacity-0", "translate-y-20");
+            toast.classList.add("opacity-100", "translate-y-0");
+            setTimeout(() => {
+                toast.classList.remove("opacity-100", "translate-y-0");
+                toast.classList.add("opacity-0", "translate-y-20");
+            }, 3000);
+        }
+
+        function loadPreset(key) {
+            const preset = PRESETS[key];
+            if (!preset) return;
+
+            document.getElementById("titleInput").value = preset.title;
+            document.getElementById("textInput").value = preset.text;
+            calculateAndRender(false);
+            centerGraph();
+        }
+
+        function centerGraph() {
+            const svgRect = svg.node().getBoundingClientRect();
+            svg.transition().duration(500).call(
+                zoomBehavior.transform,
+                d3.zoomIdentity.translate(80, svgRect.height / 2 - 100).scale(0.85)
+            );
+        }
+
+        // Event Bindings
+        document.getElementById("presetSelector").addEventListener("change", (e) => loadPreset(e.target.value));
+        document.getElementById("titleInput").addEventListener("input", () => calculateAndRender(true));
+        document.getElementById("textInput").addEventListener("input", () => calculateAndRender(true));
+
+        document.getElementById("sliderPadding").addEventListener("input", (e) => {
+            paddingValue = parseInt(e.target.value);
+            document.getElementById("valPadding").innerText = `${paddingValue}px`;
+            renderGraph();
+        });
+
+        document.getElementById("sliderFontSize").addEventListener("input", (e) => {
+            fontSizeValue = parseInt(e.target.value);
+            document.getElementById("valFontSize").innerText = `${fontSizeValue}px`;
+            renderGraph();
+        });
+
+        document.getElementById("sliderMaxWidth").addEventListener("input", (e) => {
+            maxWidthValue = parseInt(e.target.value);
+            document.getElementById("valMaxWidth").innerText = `${maxWidthValue}px`;
+            renderGraph();
+        });
+
+        document.getElementById("btnAutoLayout").addEventListener("click", () => {
+            calculateAndRender(false);
+            centerGraph();
+            showToast("Layout reorganizado automaticamente!");
+        });
+
+        document.getElementById("btnExportSVG").addEventListener("click", exportCleanSVG);
+
+        document.getElementById("btnZoomIn").addEventListener("click", () => svg.transition().duration(250).call(zoomBehavior.scaleBy, 1.2));
+        document.getElementById("btnZoomOut").addEventListener("click", () => svg.transition().duration(250).call(zoomBehavior.scaleBy, 0.8));
+        document.getElementById("btnResetZoom").addEventListener("click", centerGraph);
+
+        // Initialization
+        window.addEventListener("load", () => {
+            lucide.createIcons();
+            loadPreset("english");
+        });
+    </script>
+</body>
+</html>

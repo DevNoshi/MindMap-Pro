@@ -1,41 +1,49 @@
-🧠 MindMap Studio | HUD & Gerador de Mapas Mentais
-Um aplicativo web interativo moderno desenvolvido em Python, Streamlit e Graphviz que permite criar, estruturar e visualizar mapas mentais complexos em tempo real a partir de texto indentado.
+🧠 MindMap Studio | Interactive Web HUD & Vector Editor
+Uma ferramenta moderna, leve e totalmente interativa baseada em HTML5, CSS3, JavaScript e D3.js para criar, organizar visualmente, arrastar balões (drag-and-drop), dar zoom e exportar mapas mentais em SVG de alta qualidade sem depender de instalações complexas em Python.
 
-✨ Funcionalidades
-HUD Interativa (Streamlit): Interface web local responsiva com painel lateral de controle e pré-visualização instantânea.
+📋 Histórico de Versões (Changelog)
+v2.0.0 (Versão Atual - Web Interativa & Drag & Drop)
+Migração para Arquivo Único HTML/JS: Substituição do motor estático anterior baseado em Graphviz/Python por uma interface de navegador dinâmica baseada em D3.js.
 
-Parser de Texto Inteligente: Converte automaticamente blocos de texto indentados (via Tab ou espaços) em uma árvore hierárquica estruturada.
+Arrastar e Soltar (Drag & Drop): Capacidade de clicar e mover livremente qualquer nó ou ramo diretamente na tela para otimizar o espaço e eliminar a necessidade de rolagens horizontais excessivas.
 
-Múltiplos Layouts e Formatos: Suporte a diferentes orientações de fluxo (Vertical, Horizontal, etc.) e formatos de nós personalizados (Retângulos arredondados, elipses, etc.).
+Controles Visuais Avançados: Ajustes de padding, tamanho de fontes e layout em tempo real.
 
-Exportação Rápida: Opção para baixar o código estruturado em Graphviz (.dot) diretamente pela interface.
+Exportação Vetorial Limpa: Botão para exportar o arquivo SVG mantendo as alterações manuais e posições ajustadas pelo usuário.
 
-Design Dark Minimalista: Estética moderna em tons escuros e acentos refinados (#0d1117).
+v1.0.0 (Versão Inicial - Python & Streamlit)
+Criação de painel web local via Streamlit.
 
-🛠️ Pré-requisitos e Dependências
-Certifique-se de ter o Python instalado no seu computador. Além disso, o projeto depende do executável do Graphviz instalado no sistema operacional.
+Parser de texto indentado (espaços e tabulações) convertido em árvore.
 
-Instale o Graphviz no Windows (caso ainda não tenha):
+Renderização inicial estática baseada em Graphviz (.dot e SVG fixo).
 
-PowerShell
-winget install Graphviz.Graphviz
-(Certifique-se de que o caminho dos binários esteja no PATH do sistema, geralmente em C:\Program Files\Graphviz\bin).
+✨ Funcionalidades Principais
+Arrastar Nós Livres: Organização espacial totalmente manual para evitar sobreposições e otimizar a visualização de mapas densos.
 
-Instale as bibliotecas Python necessárias:
+Zoom e Pan Fluídos: Navegação facilitada com controle de escala e rolagem nativa.
 
-Bash
-pip install streamlit graphviz
-📂 Estrutura do Projeto
+Templates Rápidos: Presets integrados para testes imediatos (Dicas de Inglês, Nmap, etc.).
+
+Exportação Vetorial (SVG): Gere arquivos limpos e prontos para apresentação sem perda de qualidade.
+
+🚀 Como Utilizar
+Como o projeto agora roda diretamente no navegador utilizando tecnologias nativas web, o uso é extremamente simples:
+
+Salve o código da aplicação em um arquivo chamado index.html.
+
+Dê um duplo clique no arquivo index.html para abri-lo em qualquer navegador moderno (Chrome, Edge, Firefox, Brave).
+
+Cole sua estrutura de texto indentada na caixa lateral, ajuste os nós, arraste-os para o layout ideal e clique em Exportar SVG.
+
+📝 Formato de Entrada do Texto
+Para estruturar os ramos e sub-ramos, utilize a indentação padrão por tabulação ou espaços:
+
 Plaintext
-mapa-mental-streamlit/
-│
-├── mapa_mental.py        # Script principal da aplicação (HUD + Lógica do Parser)
-└── README.md             # Documentação do projeto
-🚀 Como Executar o Projeto
-Abra o terminal na pasta onde o arquivo mapa_mental.py está salvo.
-
-Inicie a aplicação executando o comando do Streamlit:
-
-Bash
-streamlit run mapa_mental.py
-O painel abrirá automaticamente no seu navegador padrão (geralmente em http://localhost:8501).
+Praticar Inglês
+    Áudio e Escuta
+        Ouvir podcasts diários
+        Assistir séries com legenda
+    Fala e Conversação
+        Falar sozinho (Shadowing)
+        Praticar com aplicativos
